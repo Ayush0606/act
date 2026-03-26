@@ -12,8 +12,7 @@ const LoginPage = () => {
 
   // Email validation regex
   const validateEmail = (email) => {
-    const regex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-    return regex.test(email);
+    return email.includes('@') && email.includes('.');
   };
 
   // Form validation
