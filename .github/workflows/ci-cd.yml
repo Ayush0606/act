@@ -1,0 +1,67 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    # Backend Tests
+    - name: Install backend dependencies
+      run: cd server && npm ci
+    
+    - name: Lint backend
+      run: cd server && npm run lint --if-present
+    
+    # Frontend Tests
+    - name: Install frontend dependencies
+      run: cd client && npm ci
+    
+    - name: Build frontend
+      run: cd client && npm run build
+    
+    - name: Lint frontend
+      run: cd client && npm run lint --if-present
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Deploy to Heroku (Backend)
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_APP_NAME_BACKEND: ${{ secrets.HEROKU_APP_NAME_BACKEND }}
+      run: |
+        git remote add heroku-backend https://git.heroku.com/$HEROKU_APP_NAME_BACKEND.git
+        git push -f heroku-backend main:main
+      if: env.HEROKU_API_KEY != ''
+    
+    - name: Deploy to Vercel (Frontend)
+      env:
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      run: |
+        npm install -g vercel
+        cd client
+        vercel --prod --token $VERCEL_TOKEN
+      if: env.VERCEL_TOKEN != ''

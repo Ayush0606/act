@@ -1,0 +1,8 @@
+{
+  "name": "fullstack-app-backend",
+  "description": "Full stack application backend",
+  "version": "1.0.0",
+  "engines": {
+    "node": "18.x"
+  }
+}
