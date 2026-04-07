@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
+import { useTheme } from '../context/ThemeContext';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const navigate = useNavigate();
+  const { isDark, toggleTheme } = useTheme();
 
   // Email validation regex
   const validateEmail = (email) => {
@@ -68,12 +70,21 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
+    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-900 dark:to-purple-900 flex items-center justify-center p-4">
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow"
+          title="Toggle dark mode"
+        >
+          {isDark ? '☀️' : '🌙'}
+        </button>
+      </div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md">
+        <h1 className="text-3xl font-dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-2ark:text-white mb-2">
           Welcome Back
         </h1>
-        <p className="text-center text-gray-600 mb-6">
+        <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
           Sign in to your account
         </p>
 
@@ -87,7 +98,7 @@ const LoginPage = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email Field */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">
+            <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
               Email Address
             </label>
             <input
@@ -95,18 +106,18 @@ const LoginPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white ${
+                errors.email ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
               }`}
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.email}</p>
             )}
           </div>
 
           {/* Password Field */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">
+            <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
               Password
             </label>
             <input
@@ -114,12 +125,12 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white ${
+                errors.password ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
               }`}
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.password}</p>
             )}
           </div>
 
@@ -134,12 +145,12 @@ const LoginPage = () => {
         </form>
 
         {/* Demo Credentials */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <p className="text-sm text-gray-700">
+        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+          <p className="text-sm text-gray-700 dark:text-blue-100">
             <strong>Demo Credentials:</strong>
           </p>
-          <p className="text-sm text-gray-700">Email: demo@example.com</p>
-          <p className="text-sm text-gray-700">Password: password123</p>
+          <p className="text-sm text-gray-700 dark:text-blue-100">Email: demo@example.com</p>
+          <p className="text-sm text-gray-700 dark:text-blue-100">Password: password123</p>
         </div>
       </div>
     </div>
